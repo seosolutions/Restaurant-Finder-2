@@ -6,15 +6,29 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.widget.ListView;
 
 /**
  * Created by jianxin on 3/18/16.
  */
-public class SearchActivity extends FragmentActivity{
+public class SearchActivity extends AppCompatActivity{
+    private final String TAG = "SearchActivity";
+
+    private String[] mNavigationDrawerTitles;
+    private DrawerLayout mDrawerLayout;
+    private ListView mDrawerList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_in_search);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(R.string.search_activity_actionbar_title);
 
         handleIntent(getIntent());
     }
@@ -36,6 +50,8 @@ public class SearchActivity extends FragmentActivity{
     }
 
     private void doMySearch(String query) {
+
+        Log.d(TAG, "doMySearch(): query is: " + query);
 
         FragmentManager fm = getSupportFragmentManager();
         Fragment fragment = fm.findFragmentById(R.id.result_fragment_container);

@@ -30,6 +30,7 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
+import com.google.android.gms.maps.model.LatLng;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -65,7 +66,15 @@ public class MainActivity extends AppCompatActivity {
         mDrawerList.setOnItemClickListener(new ListView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView parent, View view, int position, long id) {
+                Log.d(TAG, "" + position);
+                mDrawerLayout.closeDrawers();
+                if (position == 2) {
+                    AboutDialogFragment dialog = new AboutDialogFragment();
+                    dialog.show(getSupportFragmentManager(), "AboutDialog");
+                } else if (position == 1) {
+                    // show favorites page:
 
+                }
             }
         });
 
@@ -75,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
         mDrawerLayout.setDrawerListener(mActionBarDrawerToggle);
 
 
-        mPickPlaceButton = (AppCompatButton) findViewById(R.id.pick_place_cardview);
+        mPickPlaceButton = (AppCompatButton) findViewById(R.id.pick_place_button);
         mPickPlaceButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -104,6 +113,20 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+
+        // set the default place as San Jose
+        FragmentManager fm = getSupportFragmentManager();
+        mCardFragment = fm.findFragmentById(R.id.main_layout);
+
+        if (mCardFragment == null) {
+            mCardFragment = new CardFragment();
+            fm.beginTransaction()
+                    .add(R.id.main_layout, mCardFragment)
+                    .commit();
+        }
+
+        ((CardFragment) mCardFragment).updateCardContents("Downtown San Jose", "Downtown San Jose, San Jose, CA, USA", "");
 
     }
 
@@ -176,6 +199,8 @@ public class MainActivity extends AppCompatActivity {
                 final CharSequence address = place.getAddress();
                 final CharSequence phone = place.getPhoneNumber();
                 final String placeId = place.getId();
+                LatLng latLng = place.getLatLng();
+                Log.d(TAG, "Longitude: " + latLng.longitude + "\nLatitude: " + latLng.latitude);
                 String attribution = PlacePicker.getAttributions(data);
                 if(attribution == null){
                     attribution = "";
@@ -191,7 +216,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "Place selected: " + placeId + " (" + name.toString() + ")");
 
                 FragmentManager fm = getSupportFragmentManager();
-                Fragment mCardFragment = fm.findFragmentById(R.id.main_layout);
+                mCardFragment = fm.findFragmentById(R.id.main_layout);
 
                 if (mCardFragment == null) {
                     mCardFragment = new CardFragment();

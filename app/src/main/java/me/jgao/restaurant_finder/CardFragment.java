@@ -54,6 +54,7 @@ public class CardFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate()");
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
     }
 
     @Override

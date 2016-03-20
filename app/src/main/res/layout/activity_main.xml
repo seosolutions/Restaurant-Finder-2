@@ -54,7 +54,8 @@
                     android:text="@string/start_search_button"
                     android:textColor="@color/flatui_clouds"
                     android:drawableStart="@drawable/ic_restaurant_white_24dp"
-                    android:drawablePadding="4dp"/>
+                    android:drawablePadding="4dp"
+                    android:onClick="onSearchButtonClicked"/>
             </FrameLayout>
 
             <!--radio group: sort options-->

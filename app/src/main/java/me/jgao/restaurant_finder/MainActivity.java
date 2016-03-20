@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private AppCompatButton mPickPlaceButton;
     private final String TAG = "MainActivity";
     private Fragment mCardFragment;
+    private String mSearchViewText = "";
     /**
      * Request code passed to the PlacePicker intent to identify its result when it returns.
      */
@@ -142,6 +143,20 @@ public class MainActivity extends AppCompatActivity {
         searchView.setSearchableInfo(searchManager.getSearchableInfo(new ComponentName(this, SearchActivity.class)));
         searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
 
+        //added by myself
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                mSearchViewText = newText;
+                return true;
+            }
+        });
+
         return true;
     }
 
@@ -241,5 +256,18 @@ public class MainActivity extends AppCompatActivity {
             super.onActivityResult(requestCode, resultCode, data);
         }
         // END_INCLUDE(activity_result)
+    }
+
+    // this method should not be private:
+    // otherwise error in runtime: could not find this method
+    public void onSearchButtonClicked(View view) {
+        if ("".equals(mSearchViewText)) {
+            NoKeywordDialogFragment dialogFragment = new NoKeywordDialogFragment();
+            dialogFragment.show(getSupportFragmentManager(), "WarningDialog");
+            return;
+        }
+        Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+        intent.putExtra(SearchManager.QUERY, mSearchViewText);
+        startActivity(intent);
     }
 }

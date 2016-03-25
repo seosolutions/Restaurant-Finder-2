@@ -50,3 +50,5 @@ icon/plate and knife.ai
 .idea/libraries/animated_vector_drawable_23_2_1.xml
 
 app/src/main/AndroidManifest.xml
+
+app/src/main/res/values/yelp_strings.xml

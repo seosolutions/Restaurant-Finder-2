@@ -5,6 +5,7 @@ import android.app.SearchManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -21,6 +22,7 @@ import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.support.v7.widget.CardView;
@@ -94,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
             The PlacePicker Builder supports additional properties such as search bounds.
              */
                 try {
+                    Log.d(TAG, "pick place button clicked");
                     PlacePicker.IntentBuilder intentBuilder = new PlacePicker.IntentBuilder();
                     Intent intent = intentBuilder.build(MainActivity.this);
                     // Start the Intent by requesting a result, identified by a request code.
@@ -194,6 +197,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         // BEGIN_INCLUDE(activity_result)
+        Log.d(TAG, "onActivityResult()");
+        Log.d(TAG, "requestCode: " + requestCode + "\nresultCode: " + resultCode);
         if (requestCode == REQUEST_PLACE_PICKER) {
             // This result is from the PlacePicker dialog.
 
@@ -216,6 +221,12 @@ public class MainActivity extends AppCompatActivity {
                 final String placeId = place.getId();
                 LatLng latLng = place.getLatLng();
                 Log.d(TAG, "Longitude: " + latLng.longitude + "\nLatitude: " + latLng.latitude);
+
+                SharedPreferences.Editor editor = getSharedPreferences(AppConstants.LATLNG_PREF, MODE_PRIVATE).edit();
+                editor.putFloat(AppConstants.LATITUDE, (float) latLng.latitude);
+                editor.putFloat(AppConstants.LONGITUDE, (float) latLng.longitude);
+                editor.apply();
+
                 String attribution = PlacePicker.getAttributions(data);
                 if(attribution == null){
                     attribution = "";
@@ -266,8 +277,36 @@ public class MainActivity extends AppCompatActivity {
             dialogFragment.show(getSupportFragmentManager(), "WarningDialog");
             return;
         }
+        startSearch();
+    }
+
+    public void startSearch() {
+        Log.d(TAG, "startSearch()");
         Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+        intent.setAction(Intent.ACTION_SEARCH);
         intent.putExtra(SearchManager.QUERY, mSearchViewText);
         startActivity(intent);
+    }
+
+
+    // for RadioButtons
+    public void onRadioButtonClicked(View view) {
+        // Is the button now checked?
+        boolean checked = ((RadioButton) view).isChecked();
+
+        // Check which radio button was clicked
+        if (checked) {
+            SharedPreferences.Editor editor = getSharedPreferences(AppConstants.SORT_OPTION_PREF, MODE_PRIVATE).edit();
+
+            switch(view.getId()) {
+                case R.id.radio_button_distance:
+                    editor.putInt(AppConstants.SORT_OPTION_KEY, AppConstants.SORT_BY_DIS);
+                    break;
+                case R.id.radio_button_relevance:
+                    editor.putInt(AppConstants.SORT_OPTION_KEY, AppConstants.SORT_BY_RELEVANCE);
+                    break;
+            }
+            editor.apply();
+        }
     }
 }

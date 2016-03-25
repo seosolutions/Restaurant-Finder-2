@@ -8,7 +8,7 @@
     <string name="pick_place_button">Pick a place</string>
     <string name="start_search_button">Start searching</string>
     <string name="card_detail"><font fgcolor="#e67e22">Address: </font>%1$s\n<font fgcolor="#e67e22">Phone: </font>%2$s</string>
-    <string name="about_dialog_pos_button">OK</string>
+    <string name="about_dialog_pos_button">Search Everything</string>
     <string name="about_dialog_neg_button">Cancel</string>
     <string name="sort_options">Sort results by:</string>
     <string name="sort_by_relevance">Relevance</string>

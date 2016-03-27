@@ -8,10 +8,13 @@
     <string name="pick_place_button">Pick a place</string>
     <string name="start_search_button">Start searching</string>
     <string name="card_detail"><font fgcolor="#e67e22">Address: </font>%1$s\n<font fgcolor="#e67e22">Phone: </font>%2$s</string>
-    <string name="about_dialog_pos_button">Search Everything</string>
+    <string name="warning_dialog_search_button">Search Everything</string>
+    <string name="about_dialog_pos_button">OK</string>
     <string name="about_dialog_neg_button">Cancel</string>
     <string name="sort_options">Sort results by:</string>
     <string name="sort_by_relevance">Relevance</string>
     <string name="sort_by_distance">Distance</string>
     <string name="search_activity_actionbar_title">Search Results</string>
+    <string name="fav_activity_actionbar_title">Favorite Restaurants</string>
+    <string name="single_result_activity_actionbar_title">Restaurant Details</string>
 </resources>

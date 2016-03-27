@@ -1,9 +1,11 @@
 package me.jgao.restaurant_finder.model;
 
+import com.orm.SugarRecord;
+
 /**
  * Created by jianxin on 3/24/16.
  */
-public class Restaurant {
+public class Restaurant extends SugarRecord{
 
     private int pos;
 
@@ -27,11 +29,41 @@ public class Restaurant {
     private Double latitude;
     private Double longitude;
     private String displayAddress;
+    private String staticMapUrl;
+
+    public boolean isFavorited() {
+        return isFavorited;
+    }
+
+    public void setIsFavorited(boolean isFavorited) {
+        this.isFavorited = isFavorited;
+    }
+
+    private boolean isFavorited;
+
+
+    public Restaurant() {
+        name = "";
+        displayPhone = "";
+        distance = .0;
+        imageUrl = "";
+        ratingImgUrl = "";
+        rating = .0;
+        reviewCount = 0;
+        snippetImgUrl = "";
+        snippetText = "";
+        latitude = .0;
+        longitude = .0;
+        displayAddress = "";
+        staticMapUrl = "";
+        isFavorited = false;
+    }
+
 
     public Restaurant(String name, String displayPhone, Double distance, String imageUrl,
                       String ratingImgUrl, Double rating, int reviewCount,
                       String snippetImgUrl, String snippetText, Double latitude, Double longitude,
-                      String displayAddress, int pos) {
+                      String displayAddress, int pos, String googleMapUrl) {
         this.name = name;
         this.displayPhone = displayPhone;
         this.distance = distance;
@@ -45,6 +77,8 @@ public class Restaurant {
         this.longitude = longitude;
         this.displayAddress = displayAddress;
         this.pos = pos;
+        staticMapUrl = googleMapUrl;
+        isFavorited = false;
     }
 
     public String getDisplayAddress() {
@@ -141,6 +175,14 @@ public class Restaurant {
 
     public void setSnippetText(String snippetText) {
         this.snippetText = snippetText;
+    }
+
+    public String getStaticMapUrl() {
+        return staticMapUrl;
+    }
+
+    public void setStaticMapUrl(String staticMapUrl) {
+        this.staticMapUrl = staticMapUrl;
     }
 
 

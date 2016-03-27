@@ -17,7 +17,9 @@ import org.w3c.dom.Text;
 import java.util.List;
 
 import me.jgao.restaurant_finder.model.Restaurant;
+import me.jgao.restaurant_finder.model.RestaurantFavList;
 import me.jgao.restaurant_finder.model.RestaurantList;
+import me.jgao.restaurant_finder.util.AppConstants;
 import me.jgao.restaurant_finder.util.DownloadImageTask;
 
 /**
@@ -27,17 +29,34 @@ public class SearchResultFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
     private RestaurantAdapter mRestaurantAdapter;
+    private String frag_type;
 
 
     private void updateUI() {
 
         if (mRestaurantAdapter == null) {
-            mRestaurantAdapter = new RestaurantAdapter(RestaurantList.getRestaurantList());
+
+            if (frag_type.equals(AppConstants.FRAGMENT_FOR_FAV)) {
+                RestaurantFavList restaurantFavList = new RestaurantFavList();
+                mRestaurantAdapter = new RestaurantAdapter(restaurantFavList.getRestaurants(), restaurantFavList.getCount());
+            } else {
+                mRestaurantAdapter = new RestaurantAdapter(RestaurantList.getRestaurantList().getRestaurants(), RestaurantList.getRestaurantList().getCount());
+            }
+
             mRecyclerView.setAdapter(mRestaurantAdapter);
         } else {
             //mRestaurantAdapter.notifyDataSetChanged();
         }
     }
+
+
+    // added for differentiating between favorite list or result list
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        frag_type = getArguments().getString(AppConstants.RES_FRAGMENT_ARG);
+    }
+
 
     private class RestaurantHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView mNameTextView;
@@ -61,7 +80,7 @@ public class SearchResultFragment extends Fragment {
 
         public void bindRestaurant(Restaurant restaurant) {
             mRestaurant = restaurant;
-            mNameTextView.setText(mRestaurant.getName());
+            mNameTextView.setText(String.valueOf(mRestaurant.getPos() + 1) + ". " + mRestaurant.getName());
             mAddressTextView.setText(mRestaurant.getDisplayAddress());
             mRatingTextView.setText(String.valueOf(mRestaurant.getRating()));
             new DownloadImageTask(mRatingImgView).execute(mRestaurant.getRatingImgUrl());
@@ -70,7 +89,12 @@ public class SearchResultFragment extends Fragment {
 
         @Override
         public void onClick(View view) {
-            Intent intent = SingleResultActivity.newIntent(getActivity(), mRestaurant.getPos());
+            Intent intent;
+            if (frag_type.equals(AppConstants.FRAGMENT_FOR_SEARCH)) {
+                intent = SingleResultActivity.newIntent(getActivity(), mRestaurant.getPos(), 0);
+            } else {
+                intent = SingleResultActivity.newIntent(getActivity(), mRestaurant.getPos(), 1);
+            }
             startActivity(intent);
         }
     }
@@ -79,9 +103,11 @@ public class SearchResultFragment extends Fragment {
     private class RestaurantAdapter extends RecyclerView.Adapter<RestaurantHolder> {
         private List<Restaurant> mRestaurants;
         private RestaurantList mRestaurantList;
-        public RestaurantAdapter(RestaurantList res) {
-            mRestaurantList = res;
-            mRestaurants = mRestaurantList.getRestaurants();
+        private int count;
+        public RestaurantAdapter(List<Restaurant> restaurants, int count) {
+            //mRestaurantList = res;
+            mRestaurants = restaurants;
+            this.count = count;
         }
 
         @Override
@@ -99,7 +125,8 @@ public class SearchResultFragment extends Fragment {
 
         @Override
         public int getItemCount() {
-            return mRestaurantList.getCount();
+            //return mRestaurantList.getCount();
+            return count;
         }
     }
 

@@ -17,7 +17,7 @@ public class NoKeywordDialogFragment extends DialogFragment{
         //return super.onCreateDialog(savedInstanceState);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage("\uD83D\uDE39\uD83D\uDE39\uD83D\uDE39\n" + "No keyword to specify?")
-                .setPositiveButton(R.string.about_dialog_pos_button, new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.warning_dialog_search_button, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         ((MainActivity) getActivity()).startSearch();

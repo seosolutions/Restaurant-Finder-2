@@ -23,9 +23,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.RadioButton;
-import android.widget.TextView;
 import android.widget.Toast;
-import android.support.v7.widget.CardView;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -33,6 +31,8 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
+
+import me.jgao.restaurant_finder.util.AppConstants;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -76,7 +76,8 @@ public class MainActivity extends AppCompatActivity {
                     dialog.show(getSupportFragmentManager(), "AboutDialog");
                 } else if (position == 1) {
                     // show favorites page:
-
+                    Intent i = new Intent(MainActivity.this, FavoriteActivity.class);
+                    startActivity(i);
                 }
             }
         });
@@ -133,6 +134,7 @@ public class MainActivity extends AppCompatActivity {
         ((CardFragment) mCardFragment).updateCardContents("Downtown San Jose", "Downtown San Jose, San Jose, CA, USA", "");
 
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

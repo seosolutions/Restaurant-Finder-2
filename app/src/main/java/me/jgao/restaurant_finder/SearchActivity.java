@@ -5,12 +5,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -19,7 +19,7 @@ import android.widget.ListView;
 import com.yelp.clientlib.connection.YelpAPI;
 import com.yelp.clientlib.connection.YelpAPIFactory;
 import com.yelp.clientlib.entities.Business;
-import com.yelp.clientlib.entities.Location;
+import com.yelp.clientlib.entities.Coordinate;
 import com.yelp.clientlib.entities.SearchResponse;
 import com.yelp.clientlib.entities.options.CoordinateOptions;
 
@@ -29,6 +29,7 @@ import java.util.Map;
 
 import me.jgao.restaurant_finder.model.Restaurant;
 import me.jgao.restaurant_finder.model.RestaurantList;
+import me.jgao.restaurant_finder.util.AppConstants;
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.Response;
@@ -54,6 +55,10 @@ public class SearchActivity extends AppCompatActivity{
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_in_search);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(R.string.search_activity_actionbar_title);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setIcon(R.drawable.ic_icon_app_24);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_white_24dp);
 
         mNavigationDrawerTitles = getResources().getStringArray(R.array.navigation_drawer_titles);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout_in_search_activity);
@@ -74,7 +79,11 @@ public class SearchActivity extends AppCompatActivity{
                     dialog.show(getSupportFragmentManager(), "AboutDialog");
                 } else if (position == 1) {
                     // show favorites page:
-
+                    Intent i = new Intent(SearchActivity.this, FavoriteActivity.class);
+                    startActivity(i);
+                } else {
+                    // 'Search' clicked
+                    onBackPressed();
                 }
             }
         });
@@ -144,20 +153,33 @@ public class SearchActivity extends AppCompatActivity{
                 List<Restaurant> restaurants = RestaurantList.getRestaurantList().getRestaurants();
                 for (int i = 0; i < num_to_use; ++i) {
                     Business business = businesses.get(i);
+                    String address = business.location().displayAddress().toString();
+                    address = address.substring(1, address.length() - 1);
+                    Coordinate coordinate = business.location().coordinate();
+                    String coordStr = coordinate.latitude() + "," + coordinate.longitude();
                     restaurants.set(i, new Restaurant(
                             business.name(),
                             business.displayPhone(),
                             business.distance(),
-                            business.imageUrl(),
-                            business.ratingImgUrl(),
+                            business.imageUrl().substring(0, business.imageUrl().length() - 6) + "348s.jpg",
+                            business.ratingImgUrlLarge(),
                             business.rating(),
                             business.reviewCount(),
                             business.snippetImageUrl(),
                             business.snippetText(),
                             business.location().coordinate().latitude(),
                             business.location().coordinate().longitude(),
-                            business.location().displayAddress().get(0), i
+                            address,
+                            i,
+                            "http://maps.google.com/maps/api/staticmap?center=" + coordStr + "&zoom=15&size=600x300&markers=color:yellow%7C" + coordStr
                     ));
+
+                    // Tell if the restaurant is in the database
+                    List<Restaurant> dbRes = Restaurant.findWithQuery(Restaurant.class, "Select * from Restaurant where name = ?", business.name());
+                    if (dbRes != null && dbRes.size() > 0) {
+                        restaurants.get(i).setIsFavorited(true);
+                    }
+
                 }
 
                 // Update UI text with the searchResponse.
@@ -181,9 +203,26 @@ public class SearchActivity extends AppCompatActivity{
 
         if (fragment == null) {
             fragment = new SearchResultFragment();
+
+            // added myself:
+            // so the new fragment knows if it's to display search result list or favorite list
+            Bundle args = new Bundle();
+            args.putString(AppConstants.RES_FRAGMENT_ARG, AppConstants.FRAGMENT_FOR_SEARCH);
+            fragment.setArguments(args);
             fm.beginTransaction()
                     .add(R.id.result_fragment_container, fragment)
                     .commit();
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 }

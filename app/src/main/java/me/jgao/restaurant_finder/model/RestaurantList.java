@@ -29,7 +29,7 @@ public class RestaurantList {
     private RestaurantList() {
         sRestaurants = new ArrayList<>();
         for (int i = 0; i < 20; ++i) {
-            sRestaurants.add(new Restaurant("","",.0,"","",.0,0,"","",.0,.0,"", i));
+            sRestaurants.add(new Restaurant());
         }
     }
     public List<Restaurant> getRestaurants() {

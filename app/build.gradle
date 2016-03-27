@@ -25,6 +25,8 @@ android {
         exclude 'META-INF/NOTICE.txt'
         exclude 'META-INF/NOTICE'
         exclude 'META-INF/LICENSE'
+        exclude 'META-INF/maven/com.google.guava/guava/pom.properties'
+        exclude 'META-INF/maven/com.google.guava/guava/pom.xml'
     }
 }
 
@@ -39,5 +41,6 @@ dependencies {
     compile 'com.android.support:cardview-v7:23.+'
     compile 'com.android.support:recyclerview-v7:23.+'
     compile 'com.yelp.clientlib:yelp-android:1.0.0'
+    compile 'com.github.satyan:sugar:1.4'
 
 }
